@@ -95,6 +95,7 @@ public class SqlMapper {
           .filter((s) -> !s.isEmpty())
           .map(SqlMapper::mapLineaInsert)
           .map(lineaInsert -> mapLinea(lineaInsert, seccionesByLinea(seccionInsertsList, lineaInsert.getId())))
+          .sorted((o1, o2) -> o1.getNumero().compareTo(o2.getNumero()))
           .collect(Collectors.toList());
     }
 
