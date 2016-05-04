@@ -1,0 +1,18 @@
+apply plugin: 'java'
+
+sourceCompatibility = 1.8
+
+repositories {
+    jcenter()
+}
+
+dependencies {
+    compile 'com.squareup.okhttp3:okhttp:3.2.0'
+    compile 'com.sloydev:jsonadapters-gson:0.1.1'
+    compile 'com.sloydev:jsonadapters-core:0.1.0'
+    compile 'com.j256.ormlite:ormlite-core:4.23'
+    compile 'com.github.jsqlparser:jsqlparser:0.9.5'
+    compile 'com.flipkart.zjsonpatch:zjsonpatch:+'
+    compile 'com.artjimlop:chernobyl:1.1.0'
+    testCompile group: 'junit', name: 'junit', version: '4.11'
+}
