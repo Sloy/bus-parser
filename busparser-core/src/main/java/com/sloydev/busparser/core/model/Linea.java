@@ -1,5 +1,8 @@
 package com.sloydev.busparser.core.model;
 
+import com.sloydev.busparser.core.model.valueobject.Seccion;
+import com.sloydev.busparser.core.model.valueobject.TipoLinea;
+
 import java.util.List;
 
 public class Linea {

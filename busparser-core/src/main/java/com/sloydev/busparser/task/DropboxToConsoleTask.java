@@ -1,8 +1,8 @@
 package com.sloydev.busparser.task;
 
-import com.sloydev.busparser.console.ConsoleDataOutput;
-import com.sloydev.busparser.dropbox.DropboxDataSource;
-import com.sloydev.busparser.service.InputOutputService;
+import com.sloydev.busparser.submodules.console.ConsoleDataOutput;
+import com.sloydev.busparser.submodules.dropbox.DropboxDataSource;
+import com.sloydev.busparser.core.command.TransformCommand;
 import okhttp3.OkHttpClient;
 
 public class DropboxToConsoleTask {
@@ -12,7 +12,7 @@ public class DropboxToConsoleTask {
         dropboxDataSource.setLatestDataVersion();
         ConsoleDataOutput consoleOutput = new ConsoleDataOutput();
 
-        InputOutputService inputOutputService = new InputOutputService(dropboxDataSource, consoleOutput);
-        inputOutputService.run();
+        TransformCommand transformCommand = new TransformCommand(dropboxDataSource, consoleOutput);
+        transformCommand.run();
     }
 }
