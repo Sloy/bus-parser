@@ -15,11 +15,13 @@ import java.util.List;
 
 public class JsonFileDataOutput implements DataOutput {
 
-    private final String filePath;
+    private final String lineasFilePath;
+    private final String paradasFilePath;
     private final JsonAdapter jsonAdapter;
 
-    public JsonFileDataOutput(String filePath, JsonAdapter jsonAdapter) {
-        this.filePath = filePath;
+    public JsonFileDataOutput(String lineasFilePath, String paradasFilePath, JsonAdapter jsonAdapter) {
+        this.lineasFilePath = lineasFilePath;
+        this.paradasFilePath = paradasFilePath;
         this.jsonAdapter = jsonAdapter;
     }
 
@@ -27,7 +29,7 @@ public class JsonFileDataOutput implements DataOutput {
     public void outputLineas(List<Linea> lineas) {
         String json = jsonAdapter.toJson(lineas);
 
-        Path path = Paths.get(filePath);
+        Path path = Paths.get(lineasFilePath);
         try {
             Files.write(path, Collections.singletonList(json), Charset.forName("UTF-8"));
         } catch (IOException e) {
@@ -37,7 +39,13 @@ public class JsonFileDataOutput implements DataOutput {
 
     @Override
     public void outputParadas(List<Parada> paradas) {
-        //TODO
-        throw new IllegalStateException("Not implemented yet");
+        String json = jsonAdapter.toJson(paradas);
+
+        Path path = Paths.get(paradasFilePath);
+        try {
+            Files.write(path, Collections.singletonList(json), Charset.forName("UTF-8"));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

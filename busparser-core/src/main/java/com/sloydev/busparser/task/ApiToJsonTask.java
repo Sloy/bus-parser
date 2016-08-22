@@ -12,7 +12,7 @@ public class ApiToJsonTask {
     public static void main(String[] args) {
         JsonAdapter jsonAdapter = Injections.getJsonAdapter();
         ApiDataSource apiDataSource = new ApiDataSource(new OkHttpClient(), jsonAdapter);
-        JsonFileDataOutput consoleOutput = new JsonFileDataOutput("out/api_lineas.json", jsonAdapter);
+        JsonFileDataOutput consoleOutput = new JsonFileDataOutput("out/api_lineas.json", "out/api_paradas.json", jsonAdapter);
 
         TransformCommand transformCommand = new TransformCommand(apiDataSource, consoleOutput);
         transformCommand.run();
