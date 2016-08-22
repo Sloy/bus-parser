@@ -1,7 +1,10 @@
 package com.sloydev.busparser.submodules.sql.internal;
 
 import com.sloydev.busparser.core.model.Linea;
-import com.sloydev.busparser.core.model.valueobject.Seccion;
+import com.sloydev.busparser.core.model.valueobject.LineaId;
+import com.sloydev.busparser.core.model.Seccion;
+import com.sloydev.busparser.core.model.valueobject.SeccionId;
+import com.sloydev.busparser.core.model.valueobject.TipoLinea;
 import net.sf.jsqlparser.JSQLParserException;
 import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.expression.LongValue;
@@ -41,24 +44,24 @@ public class SqlMapper {
         }
     }
 
-    public static Seccion mapSeccion(SeccionInsert in) {
-        Seccion out = new Seccion();
-        out.setNumeroSeccion(in.getNumeroSeccion());
-        out.setNombreSeccion(in.getNombreSeccion());
-        out.setHoraInicio(in.getHoraInicio());
-        out.setHoraFin(in.getHoraFin());
-        return out;
+    public static Seccion mapSeccion(LineaId lineaId, SeccionInsert in) {
+        return Seccion.builder()
+                .id(SeccionId.create(lineaId, in.getNumeroSeccion()))
+                .nombreSeccion(in.getNombreSeccion())
+                .horaInicio(in.getHoraInicio())
+                .horaFin(in.getHoraFin())
+                .build();
     }
 
     public static Linea mapLinea(LineaInsert in, List<Seccion> secciones) {
-        Linea out = new Linea();
-        out.setId(in.getId());
-        out.setNumero(in.getNumero());
-        out.setNombre(in.getNombre());
-        out.setColor(in.getColor());
-        out.setTipo(null);//TODO
-        out.setTrayectos(secciones);
-        return out;
+        return Linea.builder()
+                .id(LineaId.create(in.getId()))
+                .numero(in.getNumero())
+                .nombre(in.getNombre())
+                .color(in.getColor())
+                .tipo(TipoLinea.create())//TODO
+                .trayectos(secciones)
+                .build();
     }
 
     public static LineaInsert mapLineaInsert(String insert) {
@@ -95,14 +98,15 @@ public class SqlMapper {
           .filter((s) -> !s.isEmpty())
           .map(SqlMapper::mapLineaInsert)
           .map(lineaInsert -> mapLinea(lineaInsert, seccionesByLinea(seccionInsertsList, lineaInsert.getId())))
-          .sorted((o1, o2) -> o1.getNumero().compareTo(o2.getNumero()))
+          .sorted((o1, o2) -> o1.numero().compareTo(o2.numero()))
           .collect(Collectors.toList());
     }
 
     private static List<Seccion> seccionesByLinea(List<SeccionInsert> secciones, int lineaId) {
+        LineaId lineaIdInstance = LineaId.create(lineaId);
         return secciones.stream()
           .filter(s -> s.getLineaId() == lineaId)
-          .map(SqlMapper::mapSeccion)
+          .map((in) -> mapSeccion(lineaIdInstance, in))
           .collect(Collectors.toList());
     }
 }

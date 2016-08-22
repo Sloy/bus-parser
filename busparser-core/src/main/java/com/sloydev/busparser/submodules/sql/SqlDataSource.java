@@ -2,6 +2,7 @@ package com.sloydev.busparser.submodules.sql;
 
 import com.sloydev.busparser.core.model.DataSource;
 import com.sloydev.busparser.core.model.Linea;
+import com.sloydev.busparser.core.model.Parada;
 import com.sloydev.busparser.submodules.sql.internal.SqlMapper;
 
 import java.io.IOException;
@@ -29,6 +30,12 @@ public class SqlDataSource implements DataSource {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public List<Parada> obtainParadas() {
+        //TODO
+        throw new IllegalStateException("Not yet implemented");
     }
 
 

@@ -1,4 +1,18 @@
+buildscript {
+    repositories {
+        jcenter()
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+    }
+    dependencies {
+        classpath "net.ltgt.gradle:gradle-apt-plugin:0.8"
+    }
+}
+
+apply plugin: "net.ltgt.apt"
 apply plugin: 'java'
+apply plugin: 'idea'
 
 sourceCompatibility = 1.8
 
@@ -14,5 +28,9 @@ dependencies {
     compile 'com.github.jsqlparser:jsqlparser:0.9.5'
     compile 'com.flipkart.zjsonpatch:zjsonpatch:+'
     compile 'com.artjimlop:chernobyl:1.1.0'
+
+    compileOnly "com.google.auto.value:auto-value:1.2"
+    apt         "com.google.auto.value:auto-value:1.2"
+
     testCompile group: 'junit', name: 'junit', version: '4.11'
 }

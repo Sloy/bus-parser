@@ -3,6 +3,7 @@ package com.sloydev.busparser.submodules.dropbox;
 import com.google.gson.Gson;
 import com.sloydev.busparser.core.model.DataSource;
 import com.sloydev.busparser.core.model.Linea;
+import com.sloydev.busparser.core.model.Parada;
 import com.sloydev.busparser.submodules.sql.internal.SqlMapper;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -48,6 +49,12 @@ public class DropboxDataSource implements DataSource {
           .collect(Collectors.toList());
 
         return SqlMapper.mapLineasFromInserts(lineasInserts, seccionesInserts);
+    }
+
+    @Override
+    public List<Parada> obtainParadas() {
+        //TODO
+        throw new IllegalStateException("Not yet implemented");
     }
 
     public void setDataVersion(Integer dataVersion) {

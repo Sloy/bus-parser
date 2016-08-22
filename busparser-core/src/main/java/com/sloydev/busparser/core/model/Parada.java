@@ -1,65 +1,42 @@
 package com.sloydev.busparser.core.model;
 
-public class Parada {
+import com.google.auto.value.AutoValue;
+import com.sloydev.busparser.core.model.valueobject.ParadaId;
+import com.sloydev.busparser.core.model.valueobject.SeccionId;
 
-    private final Integer numero;
-    private final String descripcion;
-    private final Double latitud;
-    private final Double longitud;
+import java.util.List;
 
-    public Parada(Double longitud, Double latitud, String descripcion, Integer numero) {
-        this.longitud = longitud;
-        this.latitud = latitud;
-        this.descripcion = descripcion;
-        this.numero = numero;
+@AutoValue
+public abstract class Parada {
+
+    public abstract ParadaId id();
+
+    public abstract String descripcion();
+
+    public abstract Double latitud();
+
+    public abstract Double longitud();
+
+    public abstract List<SeccionId> secciones();
+
+    public static Builder builder() {
+        return new AutoValue_Parada.Builder();
     }
 
-    public Integer getNumero() {
-        return numero;
-    }
 
-    public String getDescripcion() {
-        return descripcion;
-    }
+    @AutoValue.Builder
+    public abstract static class Builder {
 
-    public Double getLatitud() {
-        return latitud;
-    }
+        public abstract Builder id(ParadaId id);
 
-    public Double getLongitud() {
-        return longitud;
-    }
+        public abstract Builder descripcion(String descripcion);
 
-    @Override
-    public String toString() {
-        return "Parada{" +
-          "numero=" + numero +
-          ", descripcion='" + descripcion + '\'' +
-          ", latitud=" + latitud +
-          ", longitud=" + longitud +
-          '}';
-    }
+        public abstract Builder latitud(Double latitud);
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        public abstract Builder longitud(Double longitud);
 
-        Parada parada = (Parada) o;
+        public abstract Builder secciones(List<SeccionId> secciones);
 
-        if (!numero.equals(parada.numero)) return false;
-        if (!descripcion.equals(parada.descripcion)) return false;
-        if (!latitud.equals(parada.latitud)) return false;
-        return longitud.equals(parada.longitud);
-
-    }
-
-    @Override
-    public int hashCode() {
-        int result = numero.hashCode();
-        result = 31 * result + descripcion.hashCode();
-        result = 31 * result + latitud.hashCode();
-        result = 31 * result + longitud.hashCode();
-        return result;
+        public abstract Parada build();
     }
 }

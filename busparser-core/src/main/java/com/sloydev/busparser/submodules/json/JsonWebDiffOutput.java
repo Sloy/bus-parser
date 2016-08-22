@@ -25,9 +25,9 @@ public class JsonWebDiffOutput implements DiffOutput {
     public void outputDiffLineas(List<Linea> left, List<Linea> right) {
 
         Map<String, Linea> leftMap = left.stream()
-          .collect(Collectors.toMap(Linea::getNumero, Function.identity()));
+          .collect(Collectors.toMap(Linea::numero, Function.identity()));
         Map<String, Linea> rightMap = right.stream()
-          .collect(Collectors.toMap(Linea::getNumero, Function.identity()));
+          .collect(Collectors.toMap(Linea::numero, Function.identity()));
 
         String nodeLeft = jsonAdapter.toJson(leftMap);
         String nodeRight= jsonAdapter.toJson(rightMap);

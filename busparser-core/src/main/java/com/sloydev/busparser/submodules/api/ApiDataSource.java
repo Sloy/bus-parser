@@ -2,6 +2,7 @@ package com.sloydev.busparser.submodules.api;
 
 import com.sloydev.busparser.core.model.DataSource;
 import com.sloydev.busparser.core.model.Linea;
+import com.sloydev.busparser.core.model.Parada;
 import com.sloydev.busparser.submodules.api.internal.ApiMapper;
 import com.sloydev.busparser.submodules.api.internal.model.LineasList;
 import com.sloydev.jsonadapters.JsonAdapter;
@@ -44,5 +45,11 @@ public class ApiDataSource implements DataSource {
             throw new RuntimeException(e);
         }
 
+    }
+
+    @Override
+    public List<Parada> obtainParadas() {
+        //TODO
+        throw new IllegalStateException("Not yet implemented");
     }
 }
