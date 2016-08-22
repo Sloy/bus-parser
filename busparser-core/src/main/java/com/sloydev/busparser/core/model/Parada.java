@@ -23,6 +23,11 @@ public abstract class Parada {
         return new AutoValue_Parada.Builder();
     }
 
+    abstract Builder toBuilder();
+
+    public Parada withSecciones(List<SeccionId> secciones) {
+        return toBuilder().secciones(secciones).build();
+    }
 
     @AutoValue.Builder
     public abstract static class Builder {

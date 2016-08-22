@@ -2,6 +2,7 @@ package com.sloydev.busparser.submodules.json;
 
 import com.sloydev.busparser.core.model.DataOutput;
 import com.sloydev.busparser.core.model.Linea;
+import com.sloydev.busparser.core.model.Parada;
 import com.sloydev.jsonadapters.JsonAdapter;
 
 import java.io.IOException;
@@ -32,5 +33,11 @@ public class JsonFileDataOutput implements DataOutput {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public void outputParadas(List<Parada> paradas) {
+        //TODO
+        throw new IllegalStateException("Not implemented yet");
     }
 }

@@ -1,8 +1,9 @@
 package com.sloydev.busparser.core.command;
 
-import com.sloydev.busparser.core.model.DataSource;
 import com.sloydev.busparser.core.model.DataOutput;
+import com.sloydev.busparser.core.model.DataSource;
 import com.sloydev.busparser.core.model.Linea;
+import com.sloydev.busparser.core.model.Parada;
 
 import java.util.List;
 
@@ -19,6 +20,9 @@ public class TransformCommand {
     public void run() {
         List<Linea> lineas = dataSource.obtainLineas();
         dataOutput.outputLineas(lineas);
+
+        List<Parada> paradas = dataSource.obtainParadas();
+        dataOutput.outputParadas(paradas);
     }
 
 }
