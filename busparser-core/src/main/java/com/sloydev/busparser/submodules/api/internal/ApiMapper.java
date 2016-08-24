@@ -16,21 +16,6 @@ import java.util.stream.Collectors;
 
 public class ApiMapper {
 
-    public static Linea mapLinea(LineaApiModel in) {
-        LineaId lineaId = LineaId.create(Integer.valueOf(in.getMacro()));
-        return Linea.builder()
-                .id(lineaId)
-                .numero(in.getLabel())
-                .nombre(in.getNombre())
-                .color(in.getColor())
-                .trayectos(in.getSecciones().seccion.stream()
-                        .map((seccionApi) -> mapSeccion(lineaId, seccionApi))
-                        .collect(Collectors.toList())
-                )
-                .tipo(TipoLinea.create())//TODO
-                .build();
-    }
-
     private static Seccion mapSeccion(LineaId lineaId, SeccionApiModel in) {
         return Seccion.builder()
                 .id(SeccionId.create(lineaId, Integer.valueOf(in.getNumeroSeccion())))

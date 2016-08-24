@@ -3,8 +3,11 @@ package com.sloydev.busparser.submodules.api;
 import com.sloydev.busparser.core.model.DataSource;
 import com.sloydev.busparser.core.model.Linea;
 import com.sloydev.busparser.core.model.Parada;
+import com.sloydev.busparser.core.model.Seccion;
+import com.sloydev.busparser.core.model.valueobject.LineaId;
 import com.sloydev.busparser.core.model.valueobject.ParadaId;
 import com.sloydev.busparser.core.model.valueobject.SeccionId;
+import com.sloydev.busparser.core.model.valueobject.TipoLinea;
 import com.sloydev.busparser.submodules.api.internal.ApiMapper;
 import com.sloydev.busparser.submodules.api.internal.model.LineasList;
 import com.sloydev.busparser.submodules.api.internal.model.ParadaApiModel;
@@ -47,13 +50,36 @@ public class ApiDataSource implements DataSource {
             String json = response.body().string();
             LineasList[] lineas = jsonAdapter.fromJson(json, LineasList[].class);
 
-            return lineas[0].linea.stream()
-                    .map(ApiMapper::mapLinea)
+            return lineas[0].linea.parallelStream()
+                    .map((in) -> {
+                        LineaId lineaId = LineaId.create(Integer.valueOf(in.getMacro()));
+                        return Linea.builder()
+                                .id(lineaId)
+                                .numero((in).getLabel())
+                                .nombre((in).getNombre())
+                                .color((in).getColor())
+                                .tipo(TipoLinea.create())//TODO
+                                .trayectos((in).getSecciones().seccion.parallelStream()
+                                        .map((seccionApi) -> {
+                                            SeccionId seccionId = SeccionId.create(lineaId, Integer.valueOf(seccionApi.getNumeroSeccion()));
+                                            return Seccion.builder()
+                                                    .id(seccionId)
+                                                    .nombreSeccion(seccionApi.getNombreSeccion())
+                                                    .horaInicio(seccionApi.getHoraInicio())
+                                                    .horaFin(seccionApi.getHoraFin())
+                                                    .paradaIds(requestParadas(seccionId).stream()
+                                                            .map(paradaApiModel -> ParadaId.create(paradaApiModel.codigoNodo))
+                                                            .collect(Collectors.toList()))
+                                                    .build();
+                                        })
+                                        .collect(Collectors.toList())
+                                )
+                                .build();
+                    })
                     .collect(Collectors.toList());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
     }
 
     @Override

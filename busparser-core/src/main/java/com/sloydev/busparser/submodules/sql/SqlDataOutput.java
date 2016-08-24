@@ -16,6 +16,7 @@ import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
@@ -40,12 +41,12 @@ public class SqlDataOutput implements DataOutput {
         writeLineas(lineas);
         writeSecciones(lineas);
         writeTipoLineas(lineas);
+        writeRelaciones(lineas);
     }
 
     @Override
     public void outputParadas(List<Parada> paradas) {
         writeParadas(paradas);
-        writeRelaciones(paradas);
     }
 
     private void writeInserts(List<String> inserts, String filePath) {
@@ -91,8 +92,9 @@ public class SqlDataOutput implements DataOutput {
         writeInserts(paradasInserts, paradasFilePath);
     }
 
-    private void writeRelaciones(List<Parada> paradas) {
-        List<String> relacionesInserts = paradas.stream()
+    private void writeRelaciones(List<Linea> lineas) {
+        List<String> relacionesInserts = lineas.stream()
+                .flatMap(linea -> linea.trayectos().stream())
                 .map(SqlDataOutput::mapRelacionesToSql)
                 .flatMap(Collection::stream)
                 .collect(Collectors.toList());
@@ -114,7 +116,7 @@ public class SqlDataOutput implements DataOutput {
     private static String mapSeccionToSql(Seccion seccion) {
         String sqlFormat = "INSERT INTO seccion (id, nombreSeccion, numeroSeccion, horaInicio, horaFin, linea_id) VALUES " +
                 "(%d, '%s', %d, '%s', '%s', %d);";
-        int id = calculateSeccionDbId(seccion.id());
+        int id = generateSeccionDbId(seccion.id());
         String nombreSeccion = seccion.nombreSeccion();
         int numeroSeccion = seccion.id().numeroSeccion();
         String horaInicio = seccion.horaInicio();
@@ -142,25 +144,38 @@ public class SqlDataOutput implements DataOutput {
 
     }
 
-    private static List<String> mapRelacionesToSql(Parada parada) {
-        String sqlFormat = "INSERT INTO paradaseccion (id, seccion_id, parada_id) VALUES (%d, %d, %d);";
-        return parada.secciones().stream()
-                .map(seccionId -> {
-                    int id = calculateRelacionDbId(seccionId, parada.id());
-                    int seccionDbId = calculateSeccionDbId(seccionId);
-                    int paradaId = parada.id().numero();
-                    return String.format(sqlFormat, id, seccionDbId, paradaId);
+    private static List<String> mapRelacionesToSql(Seccion seccion) {
+        final String sqlFormat = "INSERT INTO paradaseccion (id, seccion_id, parada_id) VALUES (%d, %d, %d);";
+        List<ParadaId> paradaIds = seccion.paradaIds();
+        return IntStream.range(0, paradaIds.size()).boxed()
+                .map(i -> {
+                    int paradaId = paradaIds.get(i).numero();
+                    int relacionId = generateRelacionDbId(seccion.id(), i);
+                    int seccionDbId = generateSeccionDbId(seccion.id());
+                    return String.format(sqlFormat, relacionId, seccionDbId, paradaId);
                 }).collect(Collectors.toList());
     }
 
-    private static int calculateSeccionDbId(SeccionId seccion) {
-        checkArgument(seccion.numeroSeccion() < 1000, "Seccion Db id generator doesn't support seccion with numeroSeccion greater than 1000");
-        return seccion.lineaId().id() * 1000 + seccion.numeroSeccion();
+    /**
+     * Output: ss lll
+     */
+    private static int generateSeccionDbId(SeccionId seccionId) {
+        int seccion = seccionId.numeroSeccion();
+        int linea = seccionId.lineaId().id();
+        checkArgument(seccion < 100);
+        checkArgument(linea < 1000);
+        return seccion * 1000 + linea;
     }
 
-    private static int calculateRelacionDbId(SeccionId seccion, ParadaId parada) {
-        int seccionDbId = calculateSeccionDbId(seccion);
-        checkArgument(parada.numero() < 10000, "Relacion DB id generator doesnt support parada with numero greater than 10000");
-        return seccionDbId * 10000 + parada.numero();
+    /**
+     * Output: ss lll iii
+     */
+    private static int generateRelacionDbId(SeccionId seccionId, int index) {
+        int seccion = seccionId.numeroSeccion();
+        int linea = seccionId.lineaId().id();
+        checkArgument(seccion < 100);
+        checkArgument(linea < 1000000);
+        checkArgument(index < 1000);
+        return seccion * 1000000 + linea * 1000 + index;
     }
 }
