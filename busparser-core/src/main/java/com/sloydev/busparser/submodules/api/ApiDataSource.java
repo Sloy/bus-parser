@@ -69,6 +69,7 @@ public class ApiDataSource implements DataSource {
                 .entrySet().stream()
                 .map(Map.Entry::getValue)
                 .map(ApiDataSource::reduceParadaWithMergedSections)
+                .sorted((p1, p2) -> Integer.compare(p1.id().numero(), p2.id().numero()))
                 .collect(Collectors.toList());
     }
 

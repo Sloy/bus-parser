@@ -5,7 +5,12 @@ import com.google.auto.value.AutoValue;
 @AutoValue
 public abstract class TipoLinea {
 
+    public abstract int id();
+
+    public abstract String nombre();
+
     public static TipoLinea create() {
-        return new AutoValue_TipoLinea();
+        return new AutoValue_TipoLinea(1, "Dummy");
     }
+
 }
