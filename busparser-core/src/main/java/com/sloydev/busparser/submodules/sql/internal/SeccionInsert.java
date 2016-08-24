@@ -2,6 +2,7 @@ package com.sloydev.busparser.submodules.sql.internal;
 
 public class SeccionInsert {
 
+    private int id;
     private String nombreSeccion;
     private int numeroSeccion;
     private String horaInicio;
@@ -46,5 +47,13 @@ public class SeccionInsert {
 
     public void setLineaId(int lineaId) {
         this.lineaId = lineaId;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }

@@ -1,8 +1,6 @@
 package com.sloydev.busparser.submodules.sql;
 
-import com.sloydev.busparser.submodules.sql.internal.LineaInsert;
-import com.sloydev.busparser.submodules.sql.internal.SeccionInsert;
-import com.sloydev.busparser.submodules.sql.internal.SqlMapper;
+import com.sloydev.busparser.submodules.sql.internal.*;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -15,6 +13,7 @@ public class SqlMapperTest {
 
         SeccionInsert seccion = SqlMapper.mapSeccionInsert(insert);
 
+        assertEquals(892, seccion.getId());
         assertEquals("HOSPITAL V.ROCIO", seccion.getNombreSeccion());
         assertEquals(1, seccion.getNumeroSeccion());
         assertEquals("0:00", seccion.getHoraInicio());
@@ -33,5 +32,28 @@ public class SqlMapperTest {
         assertEquals("Pgno.Norte-Glorieta Plus Ultra", linea.getNombre());
         assertEquals(2, linea.getTipoLinea());
         assertEquals("#f54129", linea.getColor());
+    }
+
+    @Test
+    public void readsRelacionInsert() throws Exception {
+        String insert = "INSERT INTO paradaseccion (id, seccion_id, parada_id) VALUES (1001000, 101, 257);";
+
+        RelacionInsert relacion = SqlMapper.mapRelacionInsert(insert);
+
+        assertEquals(1001000, relacion.id);
+        assertEquals(101, relacion.seccion);
+        assertEquals(257, relacion.parada);
+    }
+
+    @Test
+    public void readsParadaInsert() throws Exception {
+        String insert = "INSERT INTO parada (numero, descripcion, latitud, longitud) VALUES (1, 'Campana (Sierpes)', 37.3927116394043, -5.995132923126221);";
+
+        ParadaInsert parada = SqlMapper.mapParadaInsert(insert);
+
+        assertEquals(1, parada.numero);
+        assertEquals("Campana (Sierpes)", parada.descripcion);
+        assertEquals(37.3927116394043d, parada.latitud, 0.00000001d);
+        assertEquals(-5.995132923126221, parada.longitud, 0.00000001d);
     }
 }

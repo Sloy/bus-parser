@@ -6,9 +6,7 @@ import com.sloydev.busparser.core.model.Seccion;
 import com.sloydev.busparser.core.model.valueobject.SeccionId;
 import com.sloydev.busparser.core.model.valueobject.TipoLinea;
 import net.sf.jsqlparser.JSQLParserException;
-import net.sf.jsqlparser.expression.Expression;
-import net.sf.jsqlparser.expression.LongValue;
-import net.sf.jsqlparser.expression.StringValue;
+import net.sf.jsqlparser.expression.*;
 import net.sf.jsqlparser.expression.operators.relational.ExpressionList;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import net.sf.jsqlparser.statement.Statement;
@@ -24,6 +22,7 @@ public class SqlMapper {
             Statement stmt = CCJSqlParserUtil.parse(insert);
             List<Expression> expressions = ((ExpressionList) ((Insert) stmt).getItemsList()).getExpressions();
 
+            long id = ((LongValue) expressions.get(0)).getValue();
             String nombre = ((StringValue) expressions.get(1)).getValue();
             long numero = ((LongValue) expressions.get(2)).getValue();
             String horaInicio = ((StringValue) expressions.get(3)).getValue();
@@ -32,6 +31,7 @@ public class SqlMapper {
 
 
             SeccionInsert out = new SeccionInsert();
+            out.setId((int) id);
             out.setNumeroSeccion((int) numero);
             out.setNombreSeccion(nombre);
             out.setHoraInicio(horaInicio);
@@ -44,7 +44,7 @@ public class SqlMapper {
         }
     }
 
-    public static Seccion mapSeccion(LineaId lineaId, SeccionInsert in) {
+    private static Seccion mapSeccion(LineaId lineaId, SeccionInsert in) {
         return Seccion.builder()
                 .id(SeccionId.create(lineaId, in.getNumeroSeccion()))
                 .nombreSeccion(in.getNombreSeccion())
@@ -53,7 +53,7 @@ public class SqlMapper {
                 .build();
     }
 
-    public static Linea mapLinea(LineaInsert in, List<Seccion> secciones) {
+    private static Linea mapLinea(LineaInsert in, List<Seccion> secciones) {
         return Linea.builder()
                 .id(LineaId.create(in.getId()))
                 .numero(in.getNumero())
@@ -102,11 +102,67 @@ public class SqlMapper {
           .collect(Collectors.toList());
     }
 
+
+    public static RelacionInsert mapRelacionInsert(String insert) {
+        try {
+            Statement stmt = CCJSqlParserUtil.parse(insert);
+            List<Expression> expressions = ((ExpressionList) ((Insert) stmt).getItemsList()).getExpressions();
+
+            int id = (int) ((LongValue) expressions.get(0)).getValue();
+            int seccion = (int) ((LongValue) expressions.get(1)).getValue();
+            int parada = (int) ((LongValue) expressions.get(2)).getValue();
+
+            RelacionInsert out = new RelacionInsert();
+            out.id = id;
+            out.seccion = seccion;
+            out.parada = parada;
+            return out;
+        } catch (JSQLParserException e) {
+            System.out.println("insert = [" + insert + "]");
+            throw new RuntimeException(e);
+        }
+    }
     private static List<Seccion> seccionesByLinea(List<SeccionInsert> secciones, int lineaId) {
         LineaId lineaIdInstance = LineaId.create(lineaId);
         return secciones.stream()
           .filter(s -> s.getLineaId() == lineaId)
           .map((in) -> mapSeccion(lineaIdInstance, in))
           .collect(Collectors.toList());
+    }
+
+    public static ParadaInsert mapParadaInsert(String insert) {
+        try {
+            Statement stmt = CCJSqlParserUtil.parse(insert);
+            List<Expression> expressions = ((ExpressionList) ((Insert) stmt).getItemsList()).getExpressions();
+
+            int numero = (int) ((LongValue) expressions.get(0)).getValue();
+            String descripcion = ((StringValue) expressions.get(1)).getValue();
+            double latitud = unwrapSignedDouble(expressions.get(2));
+            double longitud = unwrapSignedDouble(expressions.get(3));
+
+            ParadaInsert out = new ParadaInsert();
+            out.numero = numero;
+            out.descripcion = descripcion;
+            out.latitud = latitud;
+            out.longitud = longitud;
+            return out;
+        } catch (JSQLParserException e) {
+            System.out.println("insert = [" + insert + "]");
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static double unwrapSignedDouble(Expression expression) {
+        if (expression instanceof DoubleValue) {
+            return ((DoubleValue) expression).getValue();
+        } else if (expression instanceof SignedExpression) {
+            double value = ((DoubleValue) ((SignedExpression) expression).getExpression()).getValue();
+            if (((SignedExpression) expression).getSign() == '-') {
+                value *= -1d;
+            }
+            return value;
+        } else {
+            throw new IllegalArgumentException("Wuut");
+        }
     }
 }
