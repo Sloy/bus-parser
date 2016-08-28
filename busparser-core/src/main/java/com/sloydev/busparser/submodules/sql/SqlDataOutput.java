@@ -52,6 +52,7 @@ public class SqlDataOutput implements DataOutput {
     private void writeInserts(List<String> inserts, String filePath) {
         Path path = Paths.get(filePath);
         try {
+            Files.createDirectories(path.getParent());
             Files.write(path, inserts, Charset.forName("UTF-8"));
         } catch (IOException e) {
             throw new RuntimeException(e);

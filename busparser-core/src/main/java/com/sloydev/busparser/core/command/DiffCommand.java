@@ -3,6 +3,7 @@ package com.sloydev.busparser.core.command;
 import com.sloydev.busparser.core.model.DataSource;
 import com.sloydev.busparser.core.model.DiffOutput;
 import com.sloydev.busparser.core.model.Linea;
+import com.sloydev.busparser.core.model.Parada;
 
 import java.util.List;
 
@@ -21,7 +22,10 @@ public class DiffCommand {
     public void run() {
         List<Linea> lineasLeft = dataSourceLeft.obtainLineas();
         List<Linea> lineasRight = dataSourceRight.obtainLineas();
-
         diffOutput.outputDiffLineas(lineasLeft, lineasRight);
+
+        List<Parada> paradasLeft = dataSourceLeft.obtainParadas();
+        List<Parada> paradasRight = dataSourceRight.obtainParadas();
+        diffOutput.outputDiffParadas(paradasLeft, paradasRight);
     }
 }

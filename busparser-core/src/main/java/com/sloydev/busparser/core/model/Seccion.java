@@ -1,5 +1,6 @@
 package com.sloydev.busparser.core.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.auto.value.AutoValue;
 import com.sloydev.busparser.core.model.valueobject.ParadaId;
 import com.sloydev.busparser.core.model.valueobject.SeccionId;
@@ -13,14 +14,19 @@ public abstract class Seccion {
         return new AutoValue_Seccion.Builder();
     }
 
+    @JsonProperty
     public abstract SeccionId id();
 
+    @JsonProperty
     public abstract String nombreSeccion();
 
+    @JsonProperty
     public abstract String horaInicio();
 
+    @JsonProperty
     public abstract String horaFin();
 
+    @JsonProperty
     public abstract List<ParadaId> paradaIds();
 
     @AutoValue.Builder
