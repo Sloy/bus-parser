@@ -4,15 +4,11 @@ import com.sloydev.busparser.core.model.DataOutput;
 import com.sloydev.busparser.core.model.DataSource;
 import com.sloydev.busparser.core.model.Linea;
 import com.sloydev.busparser.core.model.Seccion;
-import com.sloydev.busparser.core.model.valueobject.LineaId;
 
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
-import static java.util.stream.Collectors.groupingBy;
-import static java.util.stream.Stream.concat;
+import static com.sloydev.busparser.util.StreamUtils.*;
 
 public class MergeCommand {
 
@@ -27,27 +23,15 @@ public class MergeCommand {
     }
 
     public void run() {
-        Stream<Linea> concat = concat(
-                input1.obtainLineas()
-                        .stream(),
-                input2.obtainLineas()
-                        .stream()
-        );
-
-        Map<LineaId, List<Linea>> mapa = concat.collect(groupingBy(Linea::id));
-
-        List<Linea> all = mapa
-                .entrySet()
-                .stream()
-                .map(Map.Entry::getValue)
-                .map(sameLineList -> mergeSecciones(sameLineList))
+        List<Linea> allLines = concat(input1.obtainLineas(), input2.obtainLineas())
+                .collect(streamGroupingBy(Linea::id))
+                .map(this::mergeSectionsInRepeatedLines)
                 .collect(Collectors.toList());
 
-
-        output.outputLineas(all);
+        output.outputLineas(allLines);
     }
 
-    private Linea mergeSecciones(List<Linea> sameLineList) {
+    private Linea mergeSectionsInRepeatedLines(List<Linea> sameLineList) {
         Linea lineaWithAllSections = sameLineList.stream()
                 .reduce((linea1, linea2) -> linea2.withTrayectos(
                         combine(linea1.trayectos(), linea2.trayectos()))
@@ -55,35 +39,21 @@ public class MergeCommand {
         // Merge repeated sections
         List<Seccion> sectionsWithAllParadas = lineaWithAllSections.trayectos()
                 .stream()
-                .collect(groupingBy(Seccion::id))
-                .entrySet().stream()
-                .map(Map.Entry::getValue)
-                .map(sameSectionList -> mergeParadas(sameSectionList))
+                .collect(streamGroupingBy(Seccion::id))
+                .map(this::mergeParadasInRepeatedSections)
                 .collect(Collectors.toList());
 
         return lineaWithAllSections.withTrayectos(sectionsWithAllParadas);
 
     }
 
-    private Seccion mergeParadas(List<Seccion> sameSectionList) {
-        Seccion seccionWithAllParadas = sameSectionList.stream()
+    private Seccion mergeParadasInRepeatedSections(List<Seccion> sameSectionList) {
+        return sameSectionList.stream()
                 .reduce((s1, s2) -> s2.withParadas(
                         combine(s1.paradaIds(), s2.paradaIds()))
                 ).map(withRepeatedParadas ->
                         withRepeatedParadas.withParadas(distinct(withRepeatedParadas.paradaIds())))
                 .get();
-
-        return seccionWithAllParadas;
-    }
-
-    private static <T> List<T> distinct(List<T> list) {
-        return list.stream()
-                .distinct()
-                .collect(Collectors.toList());
-    }
-
-    private static <T> List<T> combine(List<T> list1, List<T> list2) {
-        return Stream.concat(list1.stream(), list2.stream()).collect(Collectors.toList());
     }
 
 }

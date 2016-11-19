@@ -19,11 +19,11 @@ import okhttp3.Response;
 
 import java.io.IOException;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import static com.sloydev.busparser.util.StreamUtils.streamGroupingBy;
 
 public class ApiDataSource implements DataSource {
 
@@ -91,9 +91,7 @@ public class ApiDataSource implements DataSource {
                         .stream()
                         .map(paradaApiModel -> ApiMapper.mapParadaSingleSection(seccion.id(), paradaApiModel))
                 )
-                .collect(Collectors.groupingBy(Parada::id))
-                .entrySet().stream()
-                .map(Map.Entry::getValue)
+                .collect(streamGroupingBy(Parada::id))
                 .map(ApiDataSource::reduceParadaWithMergedSections)
                 .sorted((p1, p2) -> Integer.compare(p1.id().numero(), p2.id().numero()))
                 .collect(Collectors.toList());
