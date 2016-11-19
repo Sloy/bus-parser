@@ -29,6 +29,12 @@ public abstract class Seccion {
     @JsonProperty
     public abstract List<ParadaId> paradaIds();
 
+    abstract Builder toBuilder();
+
+    public Seccion withParadas(List<ParadaId> paradas) {
+        return toBuilder().paradaIds(paradas).build();
+    }
+
     @AutoValue.Builder
     public static abstract class Builder {
         public abstract Builder id(SeccionId id);

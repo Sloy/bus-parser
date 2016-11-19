@@ -119,20 +119,10 @@ public class ApiDataSource implements DataSource {
 
     static Parada reduceParadaWithMergedSections(List<Parada> paradasWithSingleSection) {
         return paradasWithSingleSection.stream()
-                .reduce(emptyParada(), (paradaAcumulator, paradaSingleSeccion) ->
+                .reduce((paradaAcumulator, paradaSingleSeccion) ->
                         paradaSingleSeccion.withSecciones(Stream.of(paradaAcumulator.secciones(), paradaSingleSeccion.secciones())
                                 .flatMap(Collection::stream)
-                                .collect(Collectors.toList())));
+                                .collect(Collectors.toList()))).get();
     }
 
-    private static Parada emptyParada() {
-        return Parada.builder()
-                .id(ParadaId.create(0))
-                .latitud(0d)
-                .longitud(0d)
-                .descripcion("")
-                .secciones(Collections.emptyList())
-                .build();
-
-    }
 }

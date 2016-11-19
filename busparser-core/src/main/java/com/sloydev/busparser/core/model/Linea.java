@@ -32,6 +32,11 @@ public abstract class Linea {
         return new AutoValue_Linea.Builder();
     }
 
+    abstract Builder toBuilder();
+
+    public Linea withTrayectos(List<Seccion> secciones) {
+        return toBuilder().trayectos(secciones).build();
+    }
 
     @AutoValue.Builder
     public abstract static class Builder {
