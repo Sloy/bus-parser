@@ -1,3 +1,4 @@
 [submodule "sevibus-data"]
 	path = sevibus-data
 	url = git@github.com:Sloy/sevibus-data.git
+	branch = master
