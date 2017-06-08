@@ -11,7 +11,7 @@ import okhttp3.OkHttpClient;
 
 public class ApiToJsonAndSqlTask {
 
-    private static final String OUTPUT_FOLDER = "../busparser-data/";
+    private static final String OUTPUT_FOLDER = "sevibus-data/";
 
     public static void main(String[] args) {
         JsonAdapter jsonAdapter = Injections.getJsonAdapter();
