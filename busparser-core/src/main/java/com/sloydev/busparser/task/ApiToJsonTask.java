@@ -9,6 +9,8 @@ import okhttp3.OkHttpClient;
 
 public class ApiToJsonTask {
 
+    private static final String OUTPUT_FOLDER = "../busparser-data/";
+
     public static void main(String[] args) {
         JsonAdapter jsonAdapter = Injections.getJsonAdapter();
         ApiDataSource apiDataSource = new ApiDataSource(new OkHttpClient(), jsonAdapter);
