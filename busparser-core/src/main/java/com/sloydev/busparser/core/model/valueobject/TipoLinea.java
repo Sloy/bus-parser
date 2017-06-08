@@ -13,7 +13,7 @@ public abstract class TipoLinea {
     public abstract String nombre();
 
     public static TipoLinea create() {
-        return new AutoValue_TipoLinea(1, "Dummy");
+        return new AutoValue_TipoLinea(1, "Todas");
     }
 
 }
