@@ -35,6 +35,9 @@ echo "{
     }
 }" > info.json
 
+git co -b $DATA_VERSION
 git add .
 git ci -m "Dump on $DATE"
-git push
+git pushr
+hub pull-request -m "Dump on $DATE" | xargs open
+g co master
