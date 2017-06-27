@@ -4,7 +4,7 @@ set -x # Print the commands below
 
 GIT_MAIN_BRANCH="master"
 GIT_REMOTE="origin"
-OUTPUT_DIR="sevibus-data/"
+OUTPUT_DIR="../busparser-data/"
 JAR_FILE="busparser-core/build/libs/busparser-core-all-1.0.jar"
 DATE=$(date +%d-%m-%Y" "%H:%M:%S);
 DATA_VERSION=$(date +%Y%m%d%H%M);
