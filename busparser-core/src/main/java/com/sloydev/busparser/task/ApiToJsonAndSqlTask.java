@@ -11,22 +11,22 @@ import okhttp3.OkHttpClient;
 
 public class ApiToJsonAndSqlTask {
 
-    private static final String OUTPUT_FOLDER = "sevibus-data/";
 
     public static void main(String[] args) {
+        String outputFolder = args[0];
         JsonAdapter jsonAdapter = Injections.getJsonAdapter();
         ApiDataSource apiDataSource = new ApiDataSource(new OkHttpClient(), jsonAdapter);
 
         JsonFileDataOutput jsonOutput = new JsonFileDataOutput(
-                OUTPUT_FOLDER + "json/lineas.json",
-                OUTPUT_FOLDER + "json/paradas.json",
+                outputFolder + "json/lineas.json",
+                outputFolder + "json/paradas.json",
                 jsonAdapter);
         SqlDataOutput sqlOutput = new SqlDataOutput(
-                OUTPUT_FOLDER + "sql/lineas.sql",
-                OUTPUT_FOLDER + "sql/secciones.sql",
-                OUTPUT_FOLDER + "sql/tipolineas.sql",
-                OUTPUT_FOLDER + "sql/paradas.sql",
-                OUTPUT_FOLDER + "sql/relaciones.sql"
+                outputFolder + "sql/lineas.sql",
+                outputFolder + "sql/secciones.sql",
+                outputFolder + "sql/tipolineas.sql",
+                outputFolder + "sql/paradas.sql",
+                outputFolder + "sql/relaciones.sql"
         );
 
         CompositeDataOutput jsonAndSqlOutput = new CompositeDataOutput(jsonOutput, sqlOutput);

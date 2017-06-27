@@ -17,7 +17,7 @@ git submodule update --init --recursive
 ./gradlew fatJar
 
 # Run the jar's main task to generate outputs
-java -jar $JAR_FILE
+java -jar $JAR_FILE $OUTPUT_DIR
 
 
 cd $OUTPUT_DIR
