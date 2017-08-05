@@ -40,4 +40,4 @@ git add .
 git ci -m "Dump on $DATE"
 git pushr
 hub pull-request -m "Dump on $DATE" | xargs open
-g co master
+git co master
